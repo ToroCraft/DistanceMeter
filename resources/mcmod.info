@@ -1,0 +1,15 @@
+[
+{
+  "modid": "distancemeter",
+  "name": "ToroCraft Distance Meter",
+  "description": "Provides a HUD next to the reticle showing the distance to the block that is being pointed at.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "http://torocraft.net/",
+  "updateUrl": "",
+  "authorList": ["torocraft"],
+  "credits": "The Forge and FML guys, for making Forge and FML",
+  "logoFile": "",
+  "screenshots": [],
+}
+]
