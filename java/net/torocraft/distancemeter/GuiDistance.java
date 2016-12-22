@@ -101,4 +101,15 @@ public class GuiDistance extends Gui {
 		drawString(mc.fontRendererObj, Math.round(distance) + "", viewport.getScaledWidth() / 2 + 10, viewport.getScaledHeight() / 2 - 3, COLOR);
 	}
 
+	private int determineFallDamage() {
+		// create mock entity
+
+		// copy user armor
+
+		// invoke Block.onFallenUpon(World worldIn, BlockPos pos, Entity
+		// entityIn, float fallDistance);
+
+		return 0;
+	}
+
 }
