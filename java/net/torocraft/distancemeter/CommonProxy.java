@@ -17,4 +17,8 @@ public class CommonProxy {
 
 	}
 
+	public void setCurrentDistance() {
+
+	}
+
 }

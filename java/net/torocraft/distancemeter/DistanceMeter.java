@@ -1,6 +1,5 @@
 package net.torocraft.distancemeter;
 
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -8,11 +7,8 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.torocraft.distancemeter.config.ConfigurationHandler;
-import net.torocraft.distancemeter.events.Events;
 
-@Mod(modid = DistanceMeter.MODID, name = DistanceMeter.MODNAME, version = DistanceMeter.VERSION, clientSideOnly = true, guiFactory = "net.torocraft."
-		+ DistanceMeter.MODID + ".gui.GuiFactoryToroHealth")
+@Mod(modid = DistanceMeter.MODID, name = DistanceMeter.MODNAME, version = DistanceMeter.VERSION, clientSideOnly = true)
 public class DistanceMeter {
 
 	public static final String MODID = "distancemetermod";
@@ -28,9 +24,6 @@ public class DistanceMeter {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent e) {
 		proxy.preInit(e);
-
-		ConfigurationHandler.init(e.getSuggestedConfigurationFile());
-		MinecraftForge.EVENT_BUS.register(new ConfigurationHandler());
 	}
 
 	@EventHandler
@@ -41,7 +34,6 @@ public class DistanceMeter {
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent e) {
 		proxy.postInit(e);
-		MinecraftForge.EVENT_BUS.register(new Events());
 	}
 
 }

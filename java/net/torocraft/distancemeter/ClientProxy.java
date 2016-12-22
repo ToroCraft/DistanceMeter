@@ -1,21 +1,26 @@
 package net.torocraft.distancemeter;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.torocraft.distancemeter.gui.GuiEntityStatus;
 
 public class ClientProxy extends CommonProxy {
+	public static KeyBinding[] keyBindings;
 
-	GuiEntityStatus entityStatusGUI;
+	private GuiDistance gui;
 	private Minecraft mc = Minecraft.getMinecraft();
 
 	@Override
 	public void preInit(FMLPreInitializationEvent e) {
 		super.preInit(e);
-		entityStatusGUI = new GuiEntityStatus();
+		gui = new GuiDistance();
+		keyBindings = new KeyBinding[1];
+		keyBindings[0] = new KeyBinding("key.show_distance", 51, "key.categories.misc");
+		ClientRegistry.registerKeyBinding(keyBindings[0]);
 	}
 
 	@Override
@@ -26,7 +31,12 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void postInit(FMLPostInitializationEvent e) {
 		super.postInit(e);
-		MinecraftForge.EVENT_BUS.register(entityStatusGUI);
+		MinecraftForge.EVENT_BUS.register(gui);
+	}
+
+	@Override
+	public void setCurrentDistance() {
+		gui.setDistance(gui.getDistance() + 0.01);
 	}
 
 }
