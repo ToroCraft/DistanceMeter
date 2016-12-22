@@ -4,16 +4,23 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -84,6 +91,9 @@ public class GuiDistance extends Gui {
 
 		if (Type.BLOCK.equals(rt.typeOfHit)) {
 			distance = rt.hitVec.distanceTo(player.getPositionVector());
+
+			determineFallDamage(rt.getBlockPos());
+
 		} else {
 			distance = 0;
 		}
@@ -101,7 +111,48 @@ public class GuiDistance extends Gui {
 		drawString(mc.fontRendererObj, Math.round(distance) + "", viewport.getScaledWidth() / 2 + 10, viewport.getScaledHeight() / 2 - 3, COLOR);
 	}
 
-	private int determineFallDamage() {
+	private int determineFallDamage(BlockPos toPos) {
+
+		EntityPlayer player = mc.thePlayer;
+		World world = player.worldObj;
+		int fallDistance = player.getPosition().getY() - toPos.getY();
+
+		if (fallDistance < 1) {
+			System.out.println("fall damage < 1 :: " + fallDistance);
+			return 0;
+		}
+
+		// 1, hay = 0.2, slime = 0
+		float damageMultiplier = 1f;
+		float distance = fallDistance;
+
+		PotionEffect potioneffect = player.getActivePotionEffect(MobEffects.JUMP_BOOST);
+		float f = potioneffect == null ? 0.0F : (float) (potioneffect.getAmplifier() + 1);
+		int damageAmount = MathHelper.ceiling_float_int((distance - 3.0F - f) * damageMultiplier);
+		
+		
+		String[] methods = { "applyArmorCalculations", "func_70655_b" };
+
+		System.out.println("raw fall damage [" + damageAmount + "]");
+
+		float damage = damageAmount;
+		try {
+			damage = (Float) ReflectionHelper.findMethod(EntityLivingBase.class, player, methods, DamageSource.class, Float.TYPE).invoke(player, DamageSource.fall, (float) damageAmount);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("fall damage [" + damage + "]");
+
+		// damageAmount = player.applyArmorCalculations(DamageSource.fall,
+		// damageAmount);
+		// damageAmount = this.applyPotionDamageCalculations(damageSrc,
+		// damageAmount);
+		
+
+
+		System.out.println("health before[" + player.getHealth() + "] after[" + (player.getHealth() - damage) + "]");
+
 		// create mock entity
 
 		// copy user armor
